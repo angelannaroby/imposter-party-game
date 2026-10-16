@@ -12,4 +12,12 @@ export const CATEGORIES: ReadonlyArray<{
   { id: 'nature', icon: '🌿', label: 'Nature' },
   { id: 'entertainment', icon: '🎭', label: 'Entertainment' },
   { id: 'activities', icon: '🎲', label: 'Activities' },
+  { id: 'animals', icon: '🐾', label: 'Animals' },
+  { id: 'sports', icon: '🏀', label: 'Sports' },
+  { id: 'jobs', icon: '🧑‍🚀', label: 'Jobs' },
+  { id: 'home', icon: '🏠', label: 'At home' },
+  { id: 'technology', icon: '📱', label: 'Technology' },
+  { id: 'transport', icon: '🚀', label: 'Transport' },
+  { id: 'fashion', icon: '👟', label: 'Fashion' },
+  { id: 'fantasy', icon: '🧙', label: 'Fantasy' },
 ];

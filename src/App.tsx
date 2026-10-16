@@ -101,7 +101,10 @@ function App() {
 
   useEffect(() => {
     if (phase !== 'setup') {
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const previousScrollBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, 0);
+      document.documentElement.style.scrollBehavior = previousScrollBehavior;
     }
   }, [phase]);
 

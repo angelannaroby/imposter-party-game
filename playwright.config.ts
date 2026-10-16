@@ -9,7 +9,6 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'retain-on-failure',
-    // Make interaction tests deterministic while retaining real touch/mobile emulation.
     reducedMotion: 'reduce',
   },
   projects: [
