@@ -30,7 +30,7 @@ The first `npm install` also creates the lockfile. Commit `package-lock.json` to
 
 ## How to play
 
-1. Enter 3–12 unique names, a category and one imposter (or two for at least six players).
+1. Enter 3–12 unique names, choose a category, and select 1–4 imposters (with at least two civilians).
 2. Pass the device to each player, who holds the secret card to reveal their private role.
 3. All civilians receive the same word; imposters receive no word.
 4. Each player gives a clue, then everyone discusses suspects.

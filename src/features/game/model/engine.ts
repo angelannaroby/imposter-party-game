@@ -24,9 +24,13 @@ export function chooseWord(category: Category | 'all', usedIds: string[]): Word 
   return word;
 }
 
+export function getMaxImposters(playerCount: number): number {
+  return Math.min(4, Math.max(1, playerCount - 2));
+}
+
 export function createRound(players: Player[], imposters: number, word: Word): Round {
   if (players.length < 3 || players.length > 12) throw new Error('Need 3–12 players');
-  if (!Number.isInteger(imposters) || imposters < 1 || imposters > (players.length >= 6 ? 2 : 1)) {
+  if (!Number.isInteger(imposters) || imposters < 1 || imposters > getMaxImposters(players.length)) {
     throw new Error('Invalid imposter count');
   }
   const ids = players.map((p) => p.id);

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, ChevronRight, Eye, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
 import { WORDS } from './features/game/data/words';
 import { GAME_COPY } from './features/game/content';
-import { chooseWord, createRound, evaluateVote } from './features/game/model/engine';
+import { chooseWord, createRound, evaluateVote, getMaxImposters } from './features/game/model/engine';
 import type { Category, GameSettings, Phase, Player, Round } from './features/game/model/types';
 
 const CATEGORIES: { id: Category | 'all'; icon: string; label: string }[] = [
@@ -30,7 +30,8 @@ function App() {
   const [accused, setAccused] = useState<string[]>([]);
   const [error, setError] = useState('');
   const t = GAME_COPY;
-  const imposters = Math.min(settings.imposters, players.length >= 6 ? 2 : 1);
+  const maxImposters = getMaxImposters(players.length);
+  const imposters = Math.min(settings.imposters, maxImposters);
   const activePlayer = players[currentPlayer];
   const assignment = round?.assignments.find((a) => a.playerId === activePlayer?.id);
   const result = round ? evaluateVote(round, accused) : null;
@@ -85,7 +86,7 @@ function App() {
             <div className="hero-copy">
               <div className="eyebrow"><span className="live-dot" /> THE ULTIMATE BLUFFING GAME</div>
               <h1 id="hero-title">TRUST NO <span>ONE.</span></h1>
-              <p>Same crew. Same secret word. <strong>One sneaky imposter.</strong> Can you spot the liar?</p>
+              <p>Same crew. Same secret word. <strong>Some sneaky imposters.</strong> Can you spot the liar?</p>
             </div>
             <div className="crew-scene" aria-label="Colourful space creatures gathered around a glowing table" role="img">
               <div className="orbit-ring orbit-ring-one" /><div className="orbit-ring orbit-ring-two" />
@@ -110,7 +111,7 @@ function App() {
               {players.length < 12 && <button type="button" className="add-player" onClick={() => setPlayers((prev) => [...prev, { id: `player-${nextId}`, name: `Player ${prev.length + 1}` }])}><span>＋</span>{t.add}</button>}
             </div>
             <div className="divider" />
-            <div className="imposter-setting"><div><div className="setting-heading solo">{t.imposters}</div><p>{'How many people are in the dark?'}</p></div><div className="stepper"><button aria-label="Decrease imposters" type="button" disabled={imposters <= 1} onClick={() => setSettings((s) => ({ ...s, imposters: 1 }))}>−</button><strong>{imposters}</strong><button aria-label="Increase imposters" type="button" disabled={imposters >= 2 || players.length < 6} onClick={() => setSettings((s) => ({ ...s, imposters: 2 }))}>+</button></div></div>
+            <div className="imposter-setting"><div><div className="setting-heading solo">{t.imposters}</div><p>{`Choose 1–${maxImposters} imposters. At least two players must know the word.`}</p></div><div className="stepper"><button aria-label="Decrease imposters" type="button" disabled={imposters <= 1} onClick={() => setSettings((previous) => ({ ...previous, imposters: Math.max(1, imposters - 1) }))}>−</button><strong>{imposters}</strong><button aria-label="Increase imposters" type="button" disabled={imposters >= maxImposters} onClick={() => setSettings((previous) => ({ ...previous, imposters: Math.min(maxImposters, imposters + 1) }))}>+</button></div></div>
             <div className="divider" />
             <div className="setting-heading solo">{t.category}</div>
             <div className="category-grid">{CATEGORIES.map((c) => <button key={c.id} type="button" className={`category-choice ${settings.category === c.id ? 'is-selected' : ''}`} onClick={() => setSettings((s) => ({ ...s, category: c.id }))} aria-pressed={settings.category === c.id}><span>{c.icon}</span>{c.label}{settings.category === c.id && <Check className="category-check" size={14} />}</button>)}</div>

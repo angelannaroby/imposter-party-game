@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { chooseWord, createRound, evaluateVote } from '../engine';
+import { chooseWord, createRound, evaluateVote, getMaxImposters } from '../engine';
 import type { Player } from '../types';
 
 const players: Player[] = Array.from({ length: 7 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
@@ -23,6 +23,19 @@ describe('game engine', () => {
     expect(evaluateVote(round, guilty)).toBe('civilians');
     expect(evaluateVote(round, [guilty[0]!])).toBe('imposters');
     expect(evaluateVote(round, [guilty[0]!, guilty[0]!])).toBe('imposters');
+  });
+  it('allows up to four imposters with enough players', () => {
+    const tenPlayers = Array.from({ length: 10 }, (_, index) => ({ id: `player-${index}`, name: `Player ${index}` }));
+    const round = createRound(tenPlayers, 4, chooseWord('food', []));
+    expect(round.assignments.filter((assignment) => assignment.role === 'imposter')).toHaveLength(4);
+    expect(() => createRound(tenPlayers, 5, chooseWord('food', []))).toThrow();
+  });
+  it('limits imposters to leave at least two regular players', () => {
+    expect(getMaxImposters(3)).toBe(1);
+    expect(getMaxImposters(4)).toBe(2);
+    expect(getMaxImposters(5)).toBe(3);
+    expect(getMaxImposters(6)).toBe(4);
+    expect(getMaxImposters(12)).toBe(4);
   });
   it('prevents an unfair two-imposter game with three players', () => {
     expect(() => createRound(players.slice(0, 3), 2, chooseWord('food', []))).toThrow();
