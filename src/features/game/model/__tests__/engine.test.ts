@@ -2,7 +2,10 @@ import { describe, expect, it } from 'vitest';
 import { chooseWord, createRound, evaluateVote, getMaxImposters } from '../engine';
 import type { Player } from '../types';
 
-const players: Player[] = Array.from({ length: 7 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
+const players: Player[] = Array.from({ length: 7 }, (_, i) => ({
+  id: `p${i}`,
+  name: `Player ${i + 1}`,
+}));
 
 describe('game engine', () => {
   it('assigns exactly one imposter to a small game', () => {
@@ -25,9 +28,14 @@ describe('game engine', () => {
     expect(evaluateVote(round, [guilty[0]!, guilty[0]!])).toBe('imposters');
   });
   it('allows up to four imposters with enough players', () => {
-    const tenPlayers = Array.from({ length: 10 }, (_, index) => ({ id: `player-${index}`, name: `Player ${index}` }));
+    const tenPlayers = Array.from({ length: 10 }, (_, index) => ({
+      id: `player-${index}`,
+      name: `Player ${index}`,
+    }));
     const round = createRound(tenPlayers, 4, chooseWord('food', []));
-    expect(round.assignments.filter((assignment) => assignment.role === 'imposter')).toHaveLength(4);
+    expect(round.assignments.filter((assignment) => assignment.role === 'imposter')).toHaveLength(
+      4,
+    );
     expect(() => createRound(tenPlayers, 5, chooseWord('food', []))).toThrow();
   });
   it('limits imposters to leave at least two regular players', () => {

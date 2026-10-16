@@ -36,23 +36,45 @@ export function DiscussionTimer() {
 
   return (
     <div className="discussion-timer">
-      <div className="timer-title"><Timer size={17} /> DISCUSSION TIMER <span>OPTIONAL</span></div>
+      <div className="timer-title">
+        <Timer size={17} /> DISCUSSION TIMER <span>OPTIONAL</span>
+      </div>
       <div className="timer-options" role="group" aria-label="Discussion timer duration">
         {DURATIONS.map((seconds) => (
-          <button key={seconds} type="button" aria-pressed={duration === seconds}
-            className={duration === seconds ? 'selected' : ''} onClick={() => selectDuration(seconds)}>
+          <button
+            key={seconds}
+            type="button"
+            aria-pressed={duration === seconds}
+            className={duration === seconds ? 'selected' : ''}
+            onClick={() => selectDuration(seconds)}
+          >
             {seconds === 0 ? 'Off' : `${seconds / 60}${seconds % 60 ? ':30' : ':00'}`}
           </button>
         ))}
       </div>
       {duration !== 0 && (
         <div className="timer-controls">
-          <output className={remainingSeconds === 0 ? 'timer-finished' : ''} aria-live="off">{remainingSeconds === 0 ? 'TIME!' : formatTime(remainingSeconds)}</output>
-          <button type="button" aria-label={running ? 'Pause timer' : 'Start timer'}
-            onClick={() => { if (remainingSeconds === 0) setRemainingSeconds(duration); setRunning(!running); }}>
+          <output className={remainingSeconds === 0 ? 'timer-finished' : ''} aria-live="off">
+            {remainingSeconds === 0 ? 'TIME!' : formatTime(remainingSeconds)}
+          </output>
+          <button
+            type="button"
+            aria-label={running ? 'Pause timer' : 'Start timer'}
+            onClick={() => {
+              if (remainingSeconds === 0) setRemainingSeconds(duration);
+              setRunning(!running);
+            }}
+          >
             {running ? <Pause size={20} /> : <Play size={20} />}
           </button>
-          <button type="button" aria-label="Reset timer" onClick={() => { setRunning(false); setRemainingSeconds(duration); }}>
+          <button
+            type="button"
+            aria-label="Reset timer"
+            onClick={() => {
+              setRunning(false);
+              setRemainingSeconds(duration);
+            }}
+          >
             <RotateCcw size={19} />
           </button>
         </div>

@@ -17,16 +17,16 @@ The first `npm install` also creates the lockfile. Commit `package-lock.json` to
 
 ## Available scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the dev server |
-| `npm run build` | Typecheck and build |
-| `npm run preview` | Preview production build |
-| `npm run lint` | ESLint |
-| `npm run test` | Vitest unit tests |
-| `npm run format` | Format with Prettier |
-| `npm run format:check` | Check formatting |
-| `npm run check` | Formatting, lint, tests and build |
+| Command                | Purpose                           |
+| ---------------------- | --------------------------------- |
+| `npm run dev`          | Start the dev server              |
+| `npm run build`        | Typecheck and build               |
+| `npm run preview`      | Preview production build          |
+| `npm run lint`         | ESLint                            |
+| `npm run test`         | Vitest unit tests                 |
+| `npm run format`       | Format with Prettier              |
+| `npm run format:check` | Check formatting                  |
+| `npm run check`        | Formatting, lint, tests and build |
 
 ## How to play
 
@@ -92,3 +92,7 @@ The original app remains a client-only game: no network multiplayer, account, or
 - **Reveal answers · voted in person** lets the group reveal the actual imposters and word without selecting suspects in the app. Hide the answers again if you wish.
 - The discussion screen has an optional 60/90/120-second timer; leave it Off for unlimited discussion.
 - Game stages scroll to the top when advancing, so each new screen starts in view on a phone.
+
+## Visual refresh and voting privacy
+
+The discussion screen intentionally never reveals the secret word or imposter identities. For groups voting in person, use **New game** to start the next round without exposing answers. The game stage screens share CSS-drawn space characters and respect reduced-motion preferences.

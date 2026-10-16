@@ -2,7 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { WORDS } from '../../data/words';
 import { getImposterHint } from '../hints';
 
-const expectedCategories = new Set(['food', 'places', 'objects', 'nature', 'entertainment', 'activities']);
+const expectedCategories = new Set([
+  'food',
+  'places',
+  'objects',
+  'nature',
+  'entertainment',
+  'activities',
+]);
 
 describe('imposter hints', () => {
   it('provides a hint for every available category', () => {
