@@ -1704,3 +1704,336 @@ footer {
     transition: none !important;
   }
 }
+
+/* Gameplay polish: mobile-first secret reveal and final scene */
+.peek-card {
+  background:
+    radial-gradient(ellipse at 50% 26%, #445da962, transparent 55%),
+    linear-gradient(160deg, #272b67, #171b45);
+}
+.peek-card .stage-label {
+  font-weight: 900;
+  letter-spacing: 0.13em;
+  font-size: 11px;
+}
+.peek-card .secret-card.role-vault {
+  position: relative;
+  overflow: hidden;
+  min-height: 260px;
+  border: 2px solid #928cff;
+  background: radial-gradient(circle at 50% 45%, #434d9d, #252957 75%);
+  box-shadow:
+    inset 0 0 55px #b7b7ff16,
+    0 16px 34px #05092355;
+  transition:
+    transform 0.2s,
+    border-color 0.2s,
+    background 0.2s;
+}
+.role-vault:active {
+  transform: scale(0.99);
+}
+.role-vault__halo {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border: 1px solid #b5c6ff55;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 25px #a1b8ff09,
+    0 0 0 57px #a1b8ff07;
+  pointer-events: none;
+  animation: vault-breathe 4s ease-in-out infinite;
+}
+.role-vault__contents {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  width: 100%;
+  padding: 16px;
+  overflow-wrap: anywhere;
+}
+.role-vault__contents strong {
+  font-size: clamp(30px, 8vw, 49px);
+  line-height: 1.12;
+  letter-spacing: -0.04em;
+}
+.role-vault__locked strong {
+  font-size: clamp(23px, 6vw, 30px);
+  letter-spacing: 0.12em;
+  color: #fce2a4;
+}
+.role-vault__locked > svg {
+  color: #b5daff;
+  filter: drop-shadow(0 0 16px #8acaff66);
+}
+.role-vault__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 11px 19px;
+  border-radius: 100px;
+  background: #ffda76;
+  color: #24204c;
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 6px 24px #ffcf6244;
+}
+.peek-card .secret-card.role-vault.revealed {
+  background: radial-gradient(circle at 50% 35%, #285c77, #1c315c);
+  border-color: #68e9e0;
+}
+.peek-card .secret-card.role-vault.imposter-role.revealed {
+  background: radial-gradient(circle at 50% 35%, #813e70, #492350);
+  border-color: #ff9cca;
+}
+.role-vault .imposter-hint {
+  display: block;
+  max-width: 100%;
+  font-size: clamp(12px, 3.4vw, 16px);
+  line-height: 1.45;
+  color: #ffe0ad;
+  font-weight: 800;
+}
+.result-card {
+  gap: 0;
+  background:
+    radial-gradient(ellipse at 50% 20%, #6154a866, transparent 60%),
+    linear-gradient(150deg, #292e6c, #151937);
+}
+.result-card--crew {
+  background:
+    radial-gradient(ellipse at 50% 17%, #1c94746b, transparent 60%),
+    linear-gradient(145deg, #213e69, #151a41);
+}
+.result-card--imposters {
+  background:
+    radial-gradient(ellipse at 50% 17%, #b44c8c66, transparent 60%),
+    linear-gradient(145deg, #4b285e, #171b41);
+}
+.result-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+  padding: 9px 15px;
+  border: 1px solid #b7fff288;
+  border-radius: 100px;
+  background: #152f47aa;
+  color: #b6ffeb;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+.result-card--imposters .result-badge {
+  border-color: #ffc7e099;
+  background: #4b2144;
+  color: #ffd3e9;
+}
+.result-card h1 {
+  margin: 12px 0 21px;
+}
+.result-reveal-grid {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  display: grid;
+  gap: 12px;
+  margin: 0 auto 10px;
+}
+.result-reveal {
+  min-width: 0;
+  padding: 17px;
+  border-radius: 19px;
+  border: 1px solid #7181c17a;
+  background: #101a43a8;
+  text-align: left;
+}
+.result-reveal__label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #c1cef7;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+.result-player-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 15px;
+}
+.result-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 100px;
+  padding: 6px 13px 6px 6px;
+  background: #3b3674;
+  border: 1px solid #af91f699;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.result-player__avatar {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #ef89a8;
+  color: #ef89a8;
+  box-shadow:
+    inset -6px -6px #0002,
+    0 2px 0 #fff4;
+}
+.result-player__avatar--1 {
+  background: #b8a1ff;
+  color: #b8a1ff;
+}
+.result-player__avatar--2 {
+  background: #ffbf74;
+  color: #ffbf74;
+}
+.result-player__avatar--3 {
+  background: #79e3bf;
+  color: #79e3bf;
+}
+.result-secret-word {
+  display: block;
+  font-size: clamp(25px, 7vw, 38px);
+  line-height: 1.15;
+  margin-top: 10px;
+  color: #ffdf91;
+  overflow-wrap: anywhere;
+}
+.result-sparkles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.result-sparkles span {
+  position: absolute;
+  left: var(--spark-x);
+  top: var(--spark-y);
+  font-size: var(--spark-size);
+  color: #ffdc8f;
+  opacity: 0.9;
+  animation: spark-drift 3s ease-in-out infinite alternate;
+  animation-delay: var(--spark-delay);
+}
+.result-sparkles span:nth-child(1) {
+  --spark-x: 8%;
+  --spark-y: 17%;
+  --spark-size: 19px;
+  --spark-delay: 0s;
+}
+.result-sparkles span:nth-child(2) {
+  --spark-x: 89%;
+  --spark-y: 10%;
+  --spark-size: 21px;
+  --spark-delay: -1s;
+}
+.result-sparkles span:nth-child(3) {
+  --spark-x: 78%;
+  --spark-y: 32%;
+  --spark-size: 13px;
+  --spark-delay: -2s;
+}
+.result-sparkles span:nth-child(4) {
+  --spark-x: 13%;
+  --spark-y: 39%;
+  --spark-size: 12px;
+  --spark-delay: -0.7s;
+}
+.result-sparkles span:nth-child(5) {
+  --spark-x: 93%;
+  --spark-y: 51%;
+  --spark-size: 15px;
+  --spark-delay: -1.5s;
+}
+.result-sparkles span:nth-child(6) {
+  --spark-x: 4%;
+  --spark-y: 65%;
+  --spark-size: 15px;
+  --spark-delay: -2.7s;
+}
+.result-sparkles span:nth-child(7) {
+  --spark-x: 85%;
+  --spark-y: 78%;
+  --spark-size: 11px;
+  --spark-delay: -0.4s;
+}
+.result-sparkles span:nth-child(8) {
+  --spark-x: 25%;
+  --spark-y: 7%;
+  --spark-size: 10px;
+  --spark-delay: -1.2s;
+}
+.result-sparkles span:nth-child(9) {
+  --spark-x: 66%;
+  --spark-y: 5%;
+  --spark-size: 14px;
+  --spark-delay: -2.4s;
+}
+@keyframes spark-drift {
+  from {
+    transform: translateY(7px) rotate(-20deg);
+    opacity: 0.55;
+  }
+  to {
+    transform: translateY(-9px) rotate(22deg);
+    opacity: 1;
+  }
+}
+@keyframes vault-breathe {
+  50% {
+    transform: scale(1.09);
+    opacity: 0.6;
+  }
+}
+@media (max-width: 650px) {
+  .stage-card.peek-card,
+  .stage-card.result-card {
+    min-height: max(610px, calc(100dvh - 145px));
+    padding: 22px 16px 24px;
+  }
+  .peek-card .secret-card.role-vault {
+    min-height: clamp(270px, 36dvh, 350px);
+    margin-top: 14px;
+  }
+  .result-card .mission-art {
+    --art-height: 185px;
+  }
+  .result-reveal {
+    padding: 15px;
+  }
+  .result-card h1 {
+    font-size: clamp(32px, 9vw, 42px);
+  }
+  .result-card .primary-button {
+    margin-top: 16px;
+  }
+}
+@media (max-width: 365px) {
+  .stage-card.peek-card,
+  .stage-card.result-card {
+    padding-inline: 12px;
+  }
+  .result-player {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .role-vault__halo,
+  .result-sparkles span {
+    animation: none;
+  }
+}

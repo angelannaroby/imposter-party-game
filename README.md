@@ -96,3 +96,15 @@ The original app remains a client-only game: no network multiplayer, account, or
 ## Visual refresh and voting privacy
 
 The discussion screen intentionally never reveals the secret word or imposter identities. For groups voting in person, use **New game** to start the next round without exposing answers. The game stage screens share CSS-drawn space characters and respect reduced-motion preferences.
+
+## Stage: role reveal and results polish
+
+- The private reveal control says **Hold to reveal**. Press and hold (touch, mouse, Space, or Enter); releasing or losing focus conceals the role.
+- The next-player button says **Pass the phone**. Its action remains disabled while a role is visible.
+- Results now use animated space effects, illustrated crew, a winner badge, individual imposter identities, and a highlighted secret word.
+- Return to settings does not open a browser confirmation. The **New game** action in discussion and voting remains immediate and never reveals answers.
+- Motion respects `prefers-reduced-motion`.
+
+### Release checks
+
+Run `npm install`, `npm run format`, and `npm run check`. On a phone, test holding/releasing a role, a backgrounded browser, long names, and four-imposter results.

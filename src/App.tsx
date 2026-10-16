@@ -4,21 +4,21 @@ import {
   ArrowRight,
   Check,
   ChevronRight,
-  EyeOff,
   Gamepad2,
   Orbit,
   Play,
   RotateCcw,
-  ShieldQuestion,
   Shuffle,
   Sparkles,
   Users,
   Vote,
   X,
+  ShieldQuestion,
 } from 'lucide-react';
 import { DiscussionTimer } from './features/game/components/DiscussionTimer';
 import { CrewIllustration } from './features/game/components/CrewIllustration';
-import { getImposterHint } from './features/game/model/hints';
+import { SecretRoleCard } from './features/game/components/SecretRoleCard';
+import { RoundResult } from './features/game/components/RoundResult';
 import { CATEGORIES } from './features/game/data/categories';
 import { WORDS } from './features/game/data/words';
 import { GAME_COPY } from './features/game/content';
@@ -381,7 +381,7 @@ function App() {
             <button
               className="subtle-link"
               onClick={() => {
-                if (window.confirm('Leave this round?')) setPhase('setup');
+                setPhase('setup');
               }}
             >
               <ArrowLeft size={15} />
@@ -404,50 +404,19 @@ function App() {
                 <span className="live-dot" /> TOP SECRET · {activePlayer.name}
               </div>
               <h1>{'Your eyes only.'}</h1>
-              <button
-                type="button"
-                className={`secret-card ${showRole ? 'revealed' : ''} ${assignment?.role === 'imposter' ? 'imposter-role' : ''}`}
-                onPointerDown={() => setShowRole(true)}
-                onPointerUp={() => setShowRole(false)}
-                onPointerLeave={() => setShowRole(false)}
-                onPointerCancel={() => setShowRole(false)}
-                onKeyDown={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault();
-                    setShowRole(true);
-                  }
-                }}
-                onKeyUp={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') setShowRole(false);
-                }}
-                onBlur={() => setShowRole(false)}
-                aria-label={t.reveal}
-              >
-                {showRole ? (
-                  <>
-                    <span className="secret-label">
-                      {assignment?.role === 'imposter' ? t.imposter : t.civilian}
-                    </span>
-                    <strong>{assignment?.role === 'imposter' ? '?' : round.word.text}</strong>
-                    {assignment?.role === 'imposter' && (
-                      <span className="imposter-hint">HINT · {getImposterHint(round.word)}</span>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    <EyeOff size={35} />
-                    <strong>••••••</strong>
-                    <small>{t.reveal}</small>
-                  </>
-                )}
-              </button>
+              <SecretRoleCard
+                assignment={assignment}
+                word={round.word}
+                revealed={showRole}
+                onRevealChange={setShowRole}
+              />
               <button
                 type="button"
                 className="primary-button"
                 disabled={showRole}
                 onClick={advance}
               >
-                {currentPlayer === players.length - 1 ? t.lastHandoff : t.handoff}
+                {'Pass the phone'}
                 <ArrowRight size={19} />
               </button>
             </div>
@@ -527,54 +496,14 @@ function App() {
           </main>
         )}
 
-        {round && phase === 'result' && (
-          <main className="stage-layout">
-            <div className="stage-counter" aria-live="polite">
-              {t.result}
-            </div>
-            <div className="stage-card result-card">
-              <div className="celebration-stars" aria-hidden="true">
-                <span>✦</span>
-                <span>✧</span>
-                <span>✶</span>
-                <span>✦</span>
-                <span>✧</span>
-              </div>
-              <CrewIllustration mood={result === 'civilians' ? 'victory' : 'escape'} />
-              <div className={`result-icon ${result === 'civilians' ? 'caught' : 'escaped'}`}>
-                {result === 'civilians' ? <Check size={38} /> : <ShieldQuestion size={38} />}
-              </div>
-              <div className="stage-label">GAME OVER</div>
-              <h1>{result === 'civilians' ? t.civiliansWin : t.impostersWin}</h1>
-              <div className="reveal-info">
-                <span>{t.impostersWere}</span>
-                <strong>
-                  {round.assignments
-                    .filter((a) => a.role === 'imposter')
-                    .map((a) => players.find((p) => p.id === a.playerId)?.name)
-                    .join(' + ')}
-                </strong>
-              </div>
-              <div className="reveal-info">
-                <span>{t.wordWas}</span>
-                <strong>{round.word.text}</strong>
-              </div>
-              <button type="button" className="primary-button" onClick={startGame}>
-                {t.next}
-                <RotateCcw size={19} />
-              </button>
-              <button
-                type="button"
-                className="subtle-link"
-                onClick={() => {
-                  if (window.confirm('Leave this round?')) setPhase('setup');
-                }}
-              >
-                <ArrowLeft size={15} />
-                {t.backSetup}
-              </button>
-            </div>
-          </main>
+        {round && phase === 'result' && result && (
+          <RoundResult
+            round={round}
+            players={players}
+            winner={result}
+            onNewGame={startNewRound}
+            onSettings={() => setPhase('setup')}
+          />
         )}
 
         <footer>
