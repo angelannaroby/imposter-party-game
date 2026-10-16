@@ -112,3 +112,27 @@ Run `npm install`, `npm run format`, and `npm run check`. On a phone, test holdi
 ## Stage 4: Mobile voting
 
 Voting uses reusable, seat-based crew avatars across player setup, voting, and results. Choose exactly the configured number of suspects to confirm. Groups voting in person can use **New game** without revealing secret roles. The game is English-only.
+
+## Stage 5 — mobile release checks
+
+The app is installable on Android and iOS from the deployed HTTPS site. For offline play, **open the deployed game once while online**, then reopen it after the service worker finishes caching app resources. Updates require an online visit; the phone browser controls installation (Android: Install app; iOS Safari: Share → Add to Home Screen).
+
+```bash
+npm install
+npm run check
+npx playwright install chromium webkit
+npm run test:e2e
+```
+
+CI runs formatting, linting, unit tests, build, and mobile browser E2E tests. Playwright runs Pixel 7 Chromium and iPhone 13 WebKit emulations; these don't replace manual checks on real devices.
+
+### Release checklist
+
+- Complete a full round, including revealing a role and voting, on Android Chrome and iPhone Safari.
+- Test at 320 px width; check there is no horizontal overflow.
+- Verify that leaving the tab while holding a secret closes it.
+- Confirm **New game** does not show the previous round's answer.
+- After opening the deployed app online, disable the network and reload to test offline use.
+- Ensure the deployed page offers Add to Home Screen / Install.
+
+Architecture: the service worker in `public/sw.js` stores the built HTML and fetched local assets. Bump `CACHE_NAME` whenever modifying caching behavior. No analytics or account data is required for gameplay.
