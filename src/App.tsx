@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, ChevronRight, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Eye, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
+import { DiscussionTimer } from './features/game/components/DiscussionTimer';
 import { getImposterHint } from './features/game/model/hints';
 import { CATEGORIES } from './features/game/data/categories';
 import { WORDS } from './features/game/data/words';
@@ -19,6 +20,7 @@ function App() {
   const [showRole, setShowRole] = useState(false);
   const [usedIds, setUsedIds] = useState<string[]>([]);
   const [accused, setAccused] = useState<string[]>([]);
+  const [showInPersonReveal, setShowInPersonReveal] = useState(false);
   const [error, setError] = useState('');
   const t = GAME_COPY;
   const maxImposters = getMaxImposters(players.length);
@@ -37,6 +39,7 @@ function App() {
     setRound(createRound(players, imposters, word));
     setCurrentPlayer(0);
     setAccused([]);
+    setShowInPersonReveal(false);
     setShowRole(false);
     setError('');
     setPhase('pass');
@@ -60,8 +63,14 @@ function App() {
   }, []);
 
   function startNewRound() {
-    if (window.confirm('Start a new round? The current round will end.')) startGame();
+    startGame();
   }
+
+  useEffect(() => {
+    if (phase !== 'setup') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [phase]);
 
   function toggleAccused(id: string) {
     setAccused((previous) => previous.includes(id)
@@ -134,9 +143,9 @@ function App() {
                   {showRole ? <><span className="secret-label">{assignment?.role === 'imposter' ? t.imposter : t.civilian}</span><strong>{assignment?.role === 'imposter' ? '?' : round.word.text}</strong>{assignment?.role === 'imposter' && <span className="imposter-hint">HINT · {getImposterHint(round.word)}</span>}</> : <><EyeOff size={35} /><strong>••••••</strong><small>{t.reveal}</small></>}
                 </button><button type="button" className="primary-button" disabled={showRole} onClick={advance}>{currentPlayer === players.length - 1 ? t.lastHandoff : t.handoff}<ArrowRight size={19} /></button></div></main>}
 
-        {round && phase === 'discuss' && <main className="stage-layout"><div className="stage-counter">CREW DISCUSSION</div><div className="stage-card discussion-card"><div className="center-icon teal">👾</div><div className="stage-label">{t.round}</div><h1><span>{players.find((p) => p.id === round.starterId)?.name}</span><br />{t.starting}</h1><button className="primary-button" type="button" onClick={() => setPhase('vote')}>{t.vote}<Vote size={20} /></button><button className="secondary-button" type="button" onClick={startNewRound}><RotateCcw size={18} /> New game · skip voting</button></div></main>}
+        {round && phase === 'discuss' && <main className="stage-layout"><div className="stage-counter">CREW DISCUSSION</div><div className="stage-card discussion-card"><div className="center-icon teal">👾</div><div className="stage-label">{t.round}</div><h1><span>{players.find((p) => p.id === round.starterId)?.name}</span><br />{t.starting}</h1><DiscussionTimer key={round.word.id} /><button className="primary-button" type="button" onClick={() => setPhase('vote')}>{t.vote}<Vote size={20} /></button><button className="secondary-button" type="button" onClick={() => setShowInPersonReveal((value) => !value)}><Eye size={18} />{showInPersonReveal ? 'Hide answers' : 'Reveal answers · voted in person'}</button>{showInPersonReveal && <div className="offline-reveal" aria-live="polite"><div className="reveal-info"><span>IMPOSTERS</span><strong>{round.assignments.filter((a) => a.role === 'imposter').map((a) => players.find((p) => p.id === a.playerId)?.name).join(' + ')}</strong></div><div className="reveal-info"><span>SECRET WORD</span><strong>{round.word.text}</strong></div></div>}<button className="secondary-button" type="button" onClick={startNewRound}><RotateCcw size={18} /> New game</button></div></main>}
 
-        {round && phase === 'vote' && <main className="stage-layout"><div className="stage-counter">THE FINAL VOTE</div><div className="stage-card vote-card"><div className="center-icon">🗳️</div><div className="stage-label">MAKE YOUR PICK</div><h1>{t.voteHeading}</h1><div className="vote-amount">Select {imposters} {imposters === 1 ? 'suspect' : 'suspects'}</div><div className="suspect-list">{players.map((p, i) => <button key={p.id} type="button" aria-pressed={accused.includes(p.id)} className={`suspect-row ${accused.includes(p.id) ? 'chosen' : ''}`} onClick={() => toggleAccused(p.id)}><span className="suspect-avatar">{String(i + 1).padStart(2, '0')}</span><span>{p.name}</span><span className="suspect-checkbox">{accused.includes(p.id) && <Check size={16} />}</span></button>)}</div><div className="vote-count">{accused.length} / {imposters} {t.selected}</div><button className="primary-button" type="button" disabled={accused.length !== imposters} onClick={() => setPhase('result')}>{t.confirm}<ArrowRight size={20} /></button><button className="secondary-button" type="button" onClick={startNewRound}><RotateCcw size={18} /> New game · skip voting</button><button className="subtle-link" type="button" onClick={() => setPhase('discuss')}><ArrowLeft size={15} />{t.close}</button></div></main>}
+        {round && phase === 'vote' && <main className="stage-layout"><div className="stage-counter">THE FINAL VOTE</div><div className="stage-card vote-card"><div className="center-icon">🗳️</div><div className="stage-label">MAKE YOUR PICK</div><h1>{t.voteHeading}</h1><div className="vote-amount">Select {imposters} {imposters === 1 ? 'suspect' : 'suspects'}</div><div className="suspect-list">{players.map((p, i) => <button key={p.id} type="button" aria-pressed={accused.includes(p.id)} className={`suspect-row ${accused.includes(p.id) ? 'chosen' : ''}`} onClick={() => toggleAccused(p.id)}><span className="suspect-avatar">{String(i + 1).padStart(2, '0')}</span><span>{p.name}</span><span className="suspect-checkbox">{accused.includes(p.id) && <Check size={16} />}</span></button>)}</div><div className="vote-count">{accused.length} / {imposters} {t.selected}</div><button className="primary-button" type="button" disabled={accused.length !== imposters} onClick={() => setPhase('result')}>{t.confirm}<ArrowRight size={20} /></button><button className="secondary-button" type="button" onClick={startNewRound}><RotateCcw size={18} /> New game</button><button className="subtle-link" type="button" onClick={() => setPhase('discuss')}><ArrowLeft size={15} />{t.close}</button></div></main>}
 
         {round && phase === 'result' && <main className="stage-layout"><div className="stage-counter" aria-live="polite">{t.result}</div><div className="stage-card result-card"><div className="celebration-stars" aria-hidden="true"><span>✦</span><span>✧</span><span>✶</span><span>✦</span><span>✧</span></div><div className={`result-icon ${result === 'civilians' ? 'caught' : 'escaped'}`}>{result === 'civilians' ? <Check size={38} /> : <ShieldQuestion size={38} />}</div><div className="stage-label">GAME OVER</div><h1>{result === 'civilians' ? t.civiliansWin : t.impostersWin}</h1><div className="reveal-info"><span>{t.impostersWere}</span><strong>{round.assignments.filter((a) => a.role === 'imposter').map((a) => players.find((p) => p.id === a.playerId)?.name).join(' + ')}</strong></div><div className="reveal-info"><span>{t.wordWas}</span><strong>{round.word.text}</strong></div><button type="button" className="primary-button" onClick={startGame}>{t.next}<RotateCcw size={19} /></button><button type="button" className="subtle-link" onClick={() => { if (window.confirm('Leave this round?')) setPhase('setup'); }}><ArrowLeft size={15} />{t.backSetup}</button></div></main>}
 

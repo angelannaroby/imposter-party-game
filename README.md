@@ -85,3 +85,10 @@ No license is granted until one is added by the repository owner.
 3. `docs: document mobile game flow and acceptance criteria`
 
 The original app remains a client-only game: no network multiplayer, account, or backend is required.
+
+## Gameplay update: in-person groups
+
+- **New game** on the discussion and voting screens immediately starts another round with the same crew and settings. No browser confirmation dialog.
+- **Reveal answers · voted in person** lets the group reveal the actual imposters and word without selecting suspects in the app. Hide the answers again if you wish.
+- The discussion screen has an optional 60/90/120-second timer; leave it Off for unlimited discussion.
+- Game stages scroll to the top when advancing, so each new screen starts in view on a phone.

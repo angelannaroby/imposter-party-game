@@ -40,3 +40,18 @@
 @keyframes float-icon{0%,100%{translate:0 0}50%{translate:0 -8px}}
 @keyframes pop-in{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.pass-card .center-icon,.discussion-card .center-icon,.result-card .result-icon,.celebration-stars span{animation:none}}
+
+/* Optional discussion timer and in-person reveal */
+.discussion-timer{margin:26px auto 8px;max-width:400px;padding:16px;border:1px solid #6677b7;border-radius:18px;background:#141d4d}
+.timer-title{display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;letter-spacing:.08em;font-weight:900;color:#d0eaff}
+.timer-title span{margin-left:auto;color:#98a7df;font-size:9px}
+.timer-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin-top:14px}
+.timer-options button{min-height:42px;background:#2b376d;border:1px solid #6173af;border-radius:11px;color:#d6e6ff;font-size:12px;font-weight:900}
+.timer-options button.selected{background:#fbd276;color:#1d204d;border-color:#fbd276}
+.timer-controls{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:13px}
+.timer-controls output{font-size:31px;font-weight:1000;letter-spacing:.06em;color:#a9fff0;min-width:125px;font-variant-numeric:tabular-nums}
+.timer-controls output.timer-finished{color:#ffc57b}
+.timer-controls button{width:48px;height:48px;display:grid;place-items:center;border:1px solid #7284c4;border-radius:13px;background:#33447d;color:white}
+.offline-reveal{margin-top:15px}
+.offline-reveal .reveal-info{text-align:center}
+@media(max-width:380px){.timer-title{font-size:10px}.discussion-timer{padding:12px}}
