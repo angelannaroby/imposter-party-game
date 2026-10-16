@@ -59,3 +59,29 @@ Player names and assigned roles live only in browser memory during the current s
 ## License
 
 No license is granted until one is added by the repository owner.
+
+## Updated mobile game flow
+
+- Imposters receive a broad **category hint** during their private reveal, but never the exact word.
+- Hold to reveal a role, then **release before handing over**. Role details are hidden when the browser loses focus or changes visibility, and continuing is disabled while the card is showing.
+- Groups voting aloud can use **New game · skip voting** on the discussion or voting screen. This asks for confirmation before discarding the round.
+- In-app voting remains available for groups that prefer to select all suspects on the device.
+- Game screens have fewer instructional captions; the setup screen and README explain the rules.
+
+### Phone acceptance checklist
+
+1. Test portrait layouts at 320px, 375px and 430px; no sideways scrolling or clipped action buttons.
+2. Start rounds with 3, 6, and 12 players, including a four-imposter round with at least 6 players.
+3. During every reveal, hold and release the card; the next player must never see the previous player's word or hint.
+4. Switch browser tabs or lock the screen while holding the role card; the secret must be concealed on return.
+5. Complete a round using in-app voting, then start another round.
+6. Complete a round without voting: tap **New game · skip voting** and confirm.
+7. Verify text is readable at large mobile font sizes and reduced-motion preferences work.
+
+### Suggested incremental commits
+
+1. `feat: improve mobile round flow with private hints and skip voting`
+2. `feat: add expressive game screen polish and test imposter hints`
+3. `docs: document mobile game flow and acceptance criteria`
+
+The original app remains a client-only game: no network multiplayer, account, or backend is required.

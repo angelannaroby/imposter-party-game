@@ -18,3 +18,25 @@
 @media(max-width:650px){.site-wrap{padding:0 12px}.topbar{height:66px;padding:0 6px}.brand{font-size:17px}.brand-mark{height:34px;width:34px}.topbar-tag{font-size:9px}.hero{margin:3px auto 27px;min-height:640px;padding:35px 12px 0;border-radius:25px}.hero h1{font-size:clamp(38px,10vw,58px)}.hero-copy p{font-size:13px;max-width:270px}.hero-planet-left{left:-29px;top:165px;scale:.65}.hero-planet-right{right:-34px;top:175px;scale:.65}.crew-scene{height:265px;margin-top:9px}.crew-mate{scale:.81}.crew-orange{left:0}.crew-green{right:0}.crew-purple{scale:.75}.holo-table{left:12%;width:76%;height:75px;bottom:17px}.hero-actions{margin:-4px auto 0}.hero-bottom{margin-top:30px;font-size:8px;gap:6px}.hero-bottom svg{width:12px}.setup-panel{padding:24px 16px}.section-heading h2{font-size:23px}.section-heading p{font-size:12px}.players-grid{grid-template-columns:1fr}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.category-choice{font-size:11px;padding:8px}.howto{padding:15px;margin-bottom:28px}.howto-arrow{display:none}.stage-layout{margin:20px auto 35px}.stage-card{padding:34px 18px}.stage-card h1{font-size:32px}.secret-card{min-height:240px}.suspect-list{grid-template-columns:1fr}footer{flex-direction:column;text-align:center;align-items:center;gap:8px}}
 @media(max-width:380px){.hero{min-height:617px}.hero h1{font-size:37px}.crew-scene{height:240px}.crew-mate{scale:.7}.crew-orange{left:-12px}.crew-green{right:-12px}.hero-bottom{font-size:7px}.hero-actions{max-width:250px}.hero-copy p{font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Mobile-first round controls and secret hint */
+.secondary-button{width:100%;max-width:400px;min-height:52px;display:flex;align-items:center;justify-content:center;gap:10px;margin:17px auto 0;border:1px solid #8493d2;border-radius:15px;background:#30396e;color:#f6f6ff;font-size:14px;font-weight:900;transition:background .2s}
+.secondary-button:hover{background:#424f90}
+.imposter-hint{display:block;color:#ffe1a0;background:#4e305a;border:1px solid #f4a9c0;border-radius:13px;padding:12px 16px;font-size:clamp(14px,3vw,18px);font-weight:900;line-height:1.35;max-width:100%}
+.vote-amount{font-size:14px;font-weight:800;color:#c7d8ff;margin:12px 0}
+@media(max-width:650px){.stage-card{padding:28px 16px}.stage-card h1{margin:14px 0}.stage-card .primary-button{margin-top:20px}.secret-card{min-height:225px}.stage-layout{min-height:calc(100dvh - 190px)}.primary-button,.secondary-button{min-height:54px}.stage-card .suspect-row{min-height:60px}}
+
+/* Round art direction: expressive without competing with gameplay */
+.stage-card{position:relative;isolation:isolate;overflow:hidden;background:radial-gradient(circle at 90% 8%,#5c4f9b55,transparent 39%),linear-gradient(150deg,#252b67,#161a40)}
+.stage-card::before{content:'';position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,#5ce9ed,#ffcc66,#d795ff);opacity:.9}
+.pass-card .center-icon,.discussion-card .center-icon{animation:float-icon 4s ease-in-out infinite;box-shadow:0 12px 35px #6d67f044}
+.peek-card .secret-card:not(.revealed){box-shadow:inset 0 0 45px #b7a4ff1a,0 0 25px #5354bd2b}
+.peek-card .secret-card.revealed{box-shadow:0 0 30px #62dcfa2c}
+.result-card{background:radial-gradient(circle at 50% 14%,#55458d80,transparent 52%),linear-gradient(150deg,#282d69,#15193c)}
+.result-card .result-icon{position:relative;z-index:1;animation:pop-in .5s cubic-bezier(.18,1.35,.35,1) both}
+.celebration-stars{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.celebration-stars span{position:absolute;color:#ffe083;font-size:29px;animation:twinkle 2.8s ease-in-out infinite alternate}
+.celebration-stars span:nth-child(1){top:9%;left:12%}.celebration-stars span:nth-child(2){top:18%;right:13%;animation-delay:.7s}.celebration-stars span:nth-child(3){top:36%;left:7%;animation-delay:1s}.celebration-stars span:nth-child(4){top:49%;right:7%;animation-delay:1.6s}.celebration-stars span:nth-child(5){top:4%;left:49%;animation-delay:2s}
+@keyframes float-icon{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes pop-in{from{opacity:0;transform:scale(.65)}to{opacity:1;transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.pass-card .center-icon,.discussion-card .center-icon,.result-card .result-icon,.celebration-stars span{animation:none}}
