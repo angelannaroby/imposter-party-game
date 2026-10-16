@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Check, ChevronRight, Eye, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, ChevronRight, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
 import { getImposterHint } from './features/game/model/hints';
 import { CATEGORIES } from './features/game/data/categories';
 import { WORDS } from './features/game/data/words';
