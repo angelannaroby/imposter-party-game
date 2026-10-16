@@ -8,17 +8,19 @@ import {
   Orbit,
   Play,
   RotateCcw,
+  ShieldQuestion,
   Shuffle,
   Sparkles,
   Users,
   Vote,
   X,
-  ShieldQuestion,
 } from 'lucide-react';
 import { DiscussionTimer } from './features/game/components/DiscussionTimer';
 import { CrewIllustration } from './features/game/components/CrewIllustration';
 import { SecretRoleCard } from './features/game/components/SecretRoleCard';
 import { RoundResult } from './features/game/components/RoundResult';
+import { CrewAvatar } from './features/game/components/CrewAvatar';
+import { VoteScreen } from './features/game/components/VoteScreen';
 import { CATEGORIES } from './features/game/data/categories';
 import { WORDS } from './features/game/data/words';
 import { GAME_COPY } from './features/game/content';
@@ -246,7 +248,7 @@ function App() {
               <div className="players-grid">
                 {players.map((player, i) => (
                   <label className="player-row" key={player.id}>
-                    <span className="player-number">{String(i + 1).padStart(2, '0')}</span>
+                    <CrewAvatar index={i} size="small" />
                     <input
                       aria-label={`Player ${i + 1} name`}
                       maxLength={24}
@@ -447,53 +449,15 @@ function App() {
         )}
 
         {round && phase === 'vote' && (
-          <main className="stage-layout">
-            <div className="stage-counter">THE FINAL VOTE</div>
-            <div className="stage-card vote-card">
-              <CrewIllustration mood="voting" />
-              <div className="stage-label">MAKE YOUR PICK</div>
-              <h1>{t.voteHeading}</h1>
-              <div className="vote-amount">
-                Select {imposters} {imposters === 1 ? 'suspect' : 'suspects'}
-              </div>
-              <div className="suspect-list">
-                {players.map((p, i) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    aria-pressed={accused.includes(p.id)}
-                    className={`suspect-row ${accused.includes(p.id) ? 'chosen' : ''}`}
-                    onClick={() => toggleAccused(p.id)}
-                  >
-                    <span className="suspect-avatar">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{p.name}</span>
-                    <span className="suspect-checkbox">
-                      {accused.includes(p.id) && <Check size={16} />}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div className="vote-count">
-                {accused.length} / {imposters} {t.selected}
-              </div>
-              <button
-                className="primary-button"
-                type="button"
-                disabled={accused.length !== imposters}
-                onClick={() => setPhase('result')}
-              >
-                {t.confirm}
-                <ArrowRight size={20} />
-              </button>
-              <button className="secondary-button" type="button" onClick={startNewRound}>
-                <RotateCcw size={18} /> New game
-              </button>
-              <button className="subtle-link" type="button" onClick={() => setPhase('discuss')}>
-                <ArrowLeft size={15} />
-                {t.close}
-              </button>
-            </div>
-          </main>
+          <VoteScreen
+            players={players}
+            selectedIds={accused}
+            imposterCount={imposters}
+            onToggle={toggleAccused}
+            onConfirm={() => setPhase('result')}
+            onBack={() => setPhase('discuss')}
+            onNewGame={startNewRound}
+          />
         )}
 
         {round && phase === 'result' && result && (

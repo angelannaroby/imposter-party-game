@@ -1,5 +1,6 @@
 import { ArrowLeft, Check, RotateCcw, ShieldQuestion, Sparkles } from 'lucide-react';
 import { CrewIllustration } from './CrewIllustration';
+import { CrewAvatar } from './CrewAvatar';
 import type { Player, Round } from '../model/types';
 
 interface RoundResultProps {
@@ -55,14 +56,12 @@ export function RoundResult({ round, players, winner, onNewGame, onSettings }: R
               <ShieldQuestion size={15} aria-hidden="true" /> THE IMPOSTERS
             </span>
             <div className="result-player-list">
-              {imposters.map((player, index) => (
+              {imposters.map((player) => (
                 <span className="result-player" key={player.id}>
-                  <span
-                    className={`result-player__avatar result-player__avatar--${index % 4}`}
-                    aria-hidden="true"
-                  >
-                    ●
-                  </span>
+                  <CrewAvatar
+                    index={players.findIndex(({ id }) => id === player.id)}
+                    size="small"
+                  />
                   {player.name}
                 </span>
               ))}

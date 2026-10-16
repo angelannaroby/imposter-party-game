@@ -108,3 +108,7 @@ The discussion screen intentionally never reveals the secret word or imposter id
 ### Release checks
 
 Run `npm install`, `npm run format`, and `npm run check`. On a phone, test holding/releasing a role, a backgrounded browser, long names, and four-imposter results.
+
+## Stage 4: Mobile voting
+
+Voting uses reusable, seat-based crew avatars across player setup, voting, and results. Choose exactly the configured number of suspects to confirm. Groups voting in person can use **New game** without revealing secret roles. The game is English-only.
