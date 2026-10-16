@@ -39,10 +39,7 @@ export function createRound(players: Player[], imposters: number, word: Word): R
   const imposterIds = new Set(shuffled.slice(0, imposters));
   return {
     word,
-    assignments: players.map((p) => ({
-      playerId: p.id,
-      role: imposterIds.has(p.id) ? 'imposter' : 'civilian',
-    })),
+    assignments: players.map((p) => ({ playerId: p.id, role: imposterIds.has(p.id) ? 'imposter' : 'civilian' })),
     starterId: ids[randomIndex(ids.length)]!,
   };
 }
@@ -52,6 +49,5 @@ export function evaluateVote(round: Round, accusedIds: string[]): 'civilians' | 
   return accusedIds.length === imposters.length &&
     new Set(accusedIds).size === accusedIds.length &&
     imposters.every((id) => accusedIds.includes(id))
-    ? 'civilians'
-    : 'imposters';
+    ? 'civilians' : 'imposters';
 }

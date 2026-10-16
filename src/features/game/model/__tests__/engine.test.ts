@@ -2,10 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { chooseWord, createRound, evaluateVote } from '../engine';
 import type { Player } from '../types';
 
-const players: Player[] = Array.from({ length: 7 }, (_, i) => ({
-  id: `p${i}`,
-  name: `Player ${i + 1}`,
-}));
+const players: Player[] = Array.from({ length: 7 }, (_, i) => ({ id: `p${i}`, name: `Player ${i + 1}` }));
 
 describe('game engine', () => {
   it('assigns exactly one imposter to a small game', () => {

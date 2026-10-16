@@ -1,20 +1,5 @@
-import { useState } from 'react';
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  ChevronRight,
-  Eye,
-  EyeOff,
-  Fingerprint,
-  RotateCcw,
-  ShieldQuestion,
-  Shuffle,
-  Sparkles,
-  Users,
-  Vote,
-  X,
-} from 'lucide-react';
+import { useRef, useState } from 'react';
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Eye, EyeOff, Gamepad2, Orbit, Play, RotateCcw, ShieldQuestion, Shuffle, Sparkles, Users, Vote, X } from 'lucide-react';
 import { WORDS } from './features/game/data/words';
 import { GAME_COPY } from './features/game/content';
 import { chooseWord, createRound, evaluateVote } from './features/game/model/engine';
@@ -30,11 +15,12 @@ const CATEGORIES: { id: Category | 'all'; icon: string; label: string }[] = [
   { id: 'activities', icon: '🎲', label: 'Activities' },
 ];
 
-const createInitialPlayers = (): Player[] =>
-  Array.from({ length: 4 }, (_, i) => ({ id: `player-${i + 1}`, name: `Player ${i + 1}` }));
+
+const createInitialPlayers = (): Player[] => Array.from({ length: 4 }, (_, i) => ({ id: `player-${i + 1}`, name: `Player ${i + 1}` }));
 
 function App() {
   const [players, setPlayers] = useState<Player[]>(createInitialPlayers);
+  const setupRef = useRef<HTMLDivElement>(null);
   const [settings, setSettings] = useState<GameSettings>({ category: 'all', imposters: 1 });
   const [phase, setPhase] = useState<Phase>('setup');
   const [round, setRound] = useState<Round | null>(null);
@@ -48,19 +34,12 @@ function App() {
   const activePlayer = players[currentPlayer];
   const assignment = round?.assignments.find((a) => a.playerId === activePlayer?.id);
   const result = round ? evaluateVote(round, accused) : null;
-  const nextId =
-    players.reduce((max, p) => Math.max(max, Number(p.id.replace('player-', '')) || 0), 0) + 1;
+  const nextId = players.reduce((max, p) => Math.max(max, Number(p.id.replace('player-', '')) || 0), 0) + 1;
 
   function startGame() {
     const names = players.map((p) => p.name.trim().toLocaleLowerCase());
-    if (players.length < 3 || names.some((name) => !name)) {
-      setError(t.min);
-      return;
-    }
-    if (new Set(names).size !== names.length) {
-      setError(t.duplicate);
-      return;
-    }
+    if (players.length < 3 || names.some((name) => !name)) { setError(t.min); return; }
+    if (new Set(names).size !== names.length) { setError(t.duplicate); return; }
     const word = chooseWord(settings.category, usedIds);
     setUsedIds((previous) => [...previous, word.id]);
     setRound(createRound(players, imposters, word));
@@ -74,24 +53,17 @@ function App() {
   function advance() {
     setShowRole(false);
     if (currentPlayer + 1 >= players.length) setPhase('discuss');
-    else {
-      setCurrentPlayer((i) => i + 1);
-      setPhase('pass');
-    }
+    else { setCurrentPlayer((i) => i + 1); setPhase('pass'); }
   }
 
   function toggleAccused(id: string) {
-    setAccused((previous) =>
-      previous.includes(id)
-        ? previous.filter((item) => item !== id)
-        : previous.length < imposters
-          ? [...previous, id]
-          : previous,
-    );
+    setAccused((previous) => previous.includes(id)
+      ? previous.filter((item) => item !== id)
+      : previous.length < imposters ? [...previous, id] : previous);
   }
 
   function updateName(id: string, name: string) {
-    setPlayers((previous) => previous.map((p) => (p.id === id ? { ...p, name } : p)));
+    setPlayers((previous) => previous.map((p) => p.id === id ? { ...p, name } : p));
     setError('');
   }
 
@@ -101,365 +73,67 @@ function App() {
       <div className="ambient ambient-right" aria-hidden="true" />
       <div className="site-wrap">
         <header className="topbar">
-          <div className="brand">
-            <div className="brand-mark">
-              <Fingerprint size={22} strokeWidth={2.3} />
-            </div>
-            <span>
-              WHO<span className="brand-accent">’</span>S THE
-              <br />
-              IMPOSTER<span className="brand-accent">?</span>
-            </span>
-          </div>
+          <div className="brand"><span className="brand-mark"><Orbit size={21} strokeWidth={2.5} /></span><span>IMPOSTER<span className="brand-accent">.</span></span></div>
+          <span className="topbar-tag"><span className="live-dot" /> PARTY MODE ON</span>
         </header>
 
-        {phase === 'setup' && (
-          <main>
-            <section className="hero" aria-labelledby="hero-title">
-              <div className="eyebrow">
-                <span className="live-dot" />
-                {t.tagline}
-              </div>
-              <h1 id="hero-title">
-                {t.headingOne}
-                <br />
-                <span>{t.headingTwo}</span>
-              </h1>
-              <p>{t.subtitle}</p>
-              <div className="hero-badges">
-                <span>
-                  <Users size={15} /> 3–12 PLAYERS
-                </span>
-                <span>
-                  <Shuffle size={15} /> {WORDS.length} {t.wordCount.toUpperCase()}
-                </span>
-                <span>
-                  <Sparkles size={15} /> ENGLISH EDITION
-                </span>
-              </div>
-            </section>
-            <div className="game-panel setup-panel">
-              <div className="section-heading">
-                <div>
-                  <span className="section-kicker">01 / GAME SETUP</span>
-                  <h2>{t.setup}</h2>
-                  <p>{t.setupSub}</p>
-                </div>
-                <div className="heading-icon">
-                  <Users size={23} />
-                </div>
-              </div>
-              <div className="setting-heading">
-                <span>{t.players}</span>
-                <span className="count-pill">{players.length} / 12</span>
-              </div>
-              <div className="players-grid">
-                {players.map((player, i) => (
-                  <label className="player-row" key={player.id}>
-                    <span className="player-number">{String(i + 1).padStart(2, '0')}</span>
-                    <input
-                      aria-label={`Player ${i + 1} name`}
-                      maxLength={24}
-                      value={player.name}
-                      onChange={(e) => updateName(player.id, e.target.value)}
-                    />
-                    <button
-                      aria-label={`Remove ${player.name}`}
-                      className="remove-player"
-                      type="button"
-                      disabled={players.length <= 3}
-                      onClick={() => setPlayers((prev) => prev.filter((p) => p.id !== player.id))}
-                    >
-                      <X size={16} />
-                    </button>
-                  </label>
-                ))}
-                {players.length < 12 && (
-                  <button
-                    type="button"
-                    className="add-player"
-                    onClick={() =>
-                      setPlayers((prev) => [
-                        ...prev,
-                        { id: `player-${nextId}`, name: `Player ${prev.length + 1}` },
-                      ])
-                    }
-                  >
-                    <span>＋</span>
-                    {t.add}
-                  </button>
-                )}
-              </div>
-              <div className="divider" />
-              <div className="imposter-setting">
-                <div>
-                  <div className="setting-heading solo">{t.imposters}</div>
-                  <p>{'How many people are in the dark?'}</p>
-                </div>
-                <div className="stepper">
-                  <button
-                    aria-label="Decrease imposters"
-                    type="button"
-                    disabled={imposters <= 1}
-                    onClick={() => setSettings((s) => ({ ...s, imposters: 1 }))}
-                  >
-                    −
-                  </button>
-                  <strong>{imposters}</strong>
-                  <button
-                    aria-label="Increase imposters"
-                    type="button"
-                    disabled={imposters >= 2 || players.length < 6}
-                    onClick={() => setSettings((s) => ({ ...s, imposters: 2 }))}
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-              <div className="divider" />
-              <div className="setting-heading solo">{t.category}</div>
-              <div className="category-grid">
-                {CATEGORIES.map((c) => (
-                  <button
-                    key={c.id}
-                    type="button"
-                    className={`category-choice ${settings.category === c.id ? 'is-selected' : ''}`}
-                    onClick={() => setSettings((s) => ({ ...s, category: c.id }))}
-                    aria-pressed={settings.category === c.id}
-                  >
-                    <span>{c.icon}</span>
-                    {c.label}
-                    {settings.category === c.id && <Check className="category-check" size={14} />}
-                  </button>
-                ))}
-              </div>
-              {error && (
-                <p role="alert" className="form-error">
-                  {error}
-                </p>
-              )}
-              <button type="button" className="primary-button" onClick={startGame}>
-                {t.start}
-                <ArrowRight size={20} />
-              </button>
-              <div className="form-footnote">{t.rule}</div>
+        {phase === 'setup' && <main>
+          <section className="hero" aria-labelledby="hero-title">
+            <div className="hero-stars" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
+            <div className="hero-planet hero-planet-left" aria-hidden="true" />
+            <div className="hero-planet hero-planet-right" aria-hidden="true" />
+            <div className="hero-copy">
+              <div className="eyebrow"><span className="live-dot" /> THE ULTIMATE BLUFFING GAME</div>
+              <h1 id="hero-title">TRUST NO <span>ONE.</span></h1>
+              <p>Same crew. Same secret word. <strong>One sneaky imposter.</strong> Can you spot the liar?</p>
             </div>
-            <div className="howto">
-              <div className="howto-icon">
-                <ShieldQuestion size={21} />
-              </div>
-              <div>
-                <strong>{t.how}</strong>
-                <p>{t.howText}</p>
-              </div>
-              <ChevronRight size={18} className="howto-arrow" />
+            <div className="crew-scene" aria-label="Colourful space creatures gathered around a glowing table" role="img">
+              <div className="orbit-ring orbit-ring-one" /><div className="orbit-ring orbit-ring-two" />
+              <span className="scene-spark scene-spark-one">✦</span><span className="scene-spark scene-spark-two">✧</span>
+              <div className="crew-mate crew-orange"><div className="crew-backpack" /><div className="crew-body"><div className="crew-visor" /></div><div className="crew-leg crew-leg-left" /><div className="crew-leg crew-leg-right" /></div>
+              <div className="crew-mate crew-purple"><div className="crew-backpack" /><div className="crew-body"><div className="crew-visor" /></div><div className="crew-leg crew-leg-left" /><div className="crew-leg crew-leg-right" /></div>
+              <div className="crew-mate crew-green"><div className="crew-backpack" /><div className="crew-body"><div className="crew-visor" /></div><div className="crew-leg crew-leg-left" /><div className="crew-leg crew-leg-right" /></div>
+              <div className="holo-table"><div className="holo-inner"><span>?</span></div></div>
             </div>
-          </main>
-        )}
+            <div className="hero-actions">
+              <button type="button" className="primary-button hero-play" onClick={() => setupRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}><Play size={19} fill="currentColor" /> PLAY NOW <ArrowRight size={19} /></button>
+              <span><Users size={15} /> 3–12 PLAYERS <span className="hero-action-dot">✦</span> ONE PHONE</span>
+            </div>
+            <div className="hero-bottom"><span><Sparkles size={15} /> 100% SECRET AGENT ENERGY</span><span><Shuffle size={15} /> {WORDS.length} WORDS TO BLUFF</span></div>
+          </section>
+          <div ref={setupRef} className="setup-anchor" />
+          <div className="game-panel setup-panel">
+            <div className="section-heading"><div><span className="section-kicker">MISSION CONTROL / 01</span><h2>Assemble your crew <span aria-hidden="true">🚀</span></h2><p>{t.setupSub}</p></div><div className="heading-icon"><Gamepad2 size={23} /></div></div>
+            <div className="setting-heading"><span>{t.players}</span><span className="count-pill">{players.length} / 12</span></div>
+            <div className="players-grid">
+              {players.map((player, i) => <label className="player-row" key={player.id}><span className="player-number">{String(i + 1).padStart(2, '0')}</span><input aria-label={`Player ${i + 1} name`} maxLength={24} value={player.name} onChange={(e) => updateName(player.id, e.target.value)} /><button aria-label={`Remove ${player.name}`} className="remove-player" type="button" disabled={players.length <= 3} onClick={() => setPlayers((prev) => prev.filter((p) => p.id !== player.id))}><X size={16} /></button></label>)}
+              {players.length < 12 && <button type="button" className="add-player" onClick={() => setPlayers((prev) => [...prev, { id: `player-${nextId}`, name: `Player ${prev.length + 1}` }])}><span>＋</span>{t.add}</button>}
+            </div>
+            <div className="divider" />
+            <div className="imposter-setting"><div><div className="setting-heading solo">{t.imposters}</div><p>{'How many people are in the dark?'}</p></div><div className="stepper"><button aria-label="Decrease imposters" type="button" disabled={imposters <= 1} onClick={() => setSettings((s) => ({ ...s, imposters: 1 }))}>−</button><strong>{imposters}</strong><button aria-label="Increase imposters" type="button" disabled={imposters >= 2 || players.length < 6} onClick={() => setSettings((s) => ({ ...s, imposters: 2 }))}>+</button></div></div>
+            <div className="divider" />
+            <div className="setting-heading solo">{t.category}</div>
+            <div className="category-grid">{CATEGORIES.map((c) => <button key={c.id} type="button" className={`category-choice ${settings.category === c.id ? 'is-selected' : ''}`} onClick={() => setSettings((s) => ({ ...s, category: c.id }))} aria-pressed={settings.category === c.id}><span>{c.icon}</span>{c.label}{settings.category === c.id && <Check className="category-check" size={14} />}</button>)}</div>
+            {error && <p role="alert" className="form-error">{error}</p>}
+            <button type="button" className="primary-button" onClick={startGame}><Play size={18} fill="currentColor" />{t.start}<ArrowRight size={20} /></button>
+            <div className="form-footnote">{t.rule}</div>
+          </div>
+          <div className="howto"><div className="howto-icon"><ShieldQuestion size={21} /></div><div><strong>{t.how}</strong><p>{t.howText}</p></div><ChevronRight size={18} className="howto-arrow" /></div>
+        </main>}
 
-        {round && phase === 'pass' && activePlayer && (
-          <main className="stage-layout">
-            <div className="stage-counter">
-              {t.step} {currentPlayer + 1} {t.of} {players.length}
-            </div>
-            <div className="progress-track">
-              <div style={{ width: `${((currentPlayer + 1) / players.length) * 100}%` }} />
-            </div>
-            <div className="stage-card pass-card">
-              <div className="center-icon">
-                <Users size={36} />
-              </div>
-              <div className="stage-label">PASS THE PHONE</div>
-              <h1>
-                {t.passTo}
-                <br />
-                <span>{activePlayer.name}</span>
-              </h1>
-              <p>{t.private}</p>
-              <button className="primary-button" type="button" onClick={() => setPhase('peek')}>
-                {'I have the phone'}
-                <ArrowRight size={19} />
-              </button>
-            </div>
-            <button className="subtle-link" onClick={() => setPhase('setup')}>
-              <ArrowLeft size={15} />
-              {t.close}
-            </button>
-          </main>
-        )}
+        {round && phase === 'pass' && activePlayer && <main className="stage-layout"><div className="stage-counter">{t.step} {currentPlayer + 1} {t.of} {players.length}</div><div className="progress-track"><div style={{ width: `${((currentPlayer + 1) / players.length) * 100}%` }} /></div><div className="stage-card pass-card"><div className="center-icon">🛸</div><div className="stage-label">PASS THE PHONE</div><h1>{t.passTo}<br /><span>{activePlayer.name}</span></h1><p>{t.private}</p><button className="primary-button" type="button" onClick={() => setPhase('peek')}>{'I have the phone'}<ArrowRight size={19} /></button></div><button className="subtle-link" onClick={() => setPhase('setup')}><ArrowLeft size={15} />{t.close}</button></main>}
 
-        {round && phase === 'peek' && activePlayer && (
-          <main className="stage-layout">
-            <div className="stage-counter">
-              {t.step} {currentPlayer + 1} {t.of} {players.length}
-            </div>
-            <div className="progress-track">
-              <div style={{ width: `${((currentPlayer + 1) / players.length) * 100}%` }} />
-            </div>
-            <div className="stage-card peek-card">
-              <div className="stage-label">
-                <span className="live-dot" /> TOP SECRET · {activePlayer.name}
-              </div>
-              <h1>{'Your eyes only.'}</h1>
-              <p>{'Press and hold the card to peek at your role.'}</p>
-              <button
-                type="button"
-                className={`secret-card ${showRole ? 'revealed' : ''} ${assignment?.role === 'imposter' ? 'imposter-role' : ''}`}
-                onPointerDown={() => setShowRole(true)}
-                onPointerUp={() => setShowRole(false)}
-                onPointerLeave={() => setShowRole(false)}
-                onPointerCancel={() => setShowRole(false)}
-                onKeyDown={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault();
-                    setShowRole(true);
-                  }
-                }}
-                onKeyUp={(e) => {
-                  if (e.key === ' ' || e.key === 'Enter') setShowRole(false);
-                }}
-                onBlur={() => setShowRole(false)}
-                aria-label={t.reveal}
-              >
-                {showRole ? (
-                  <>
-                    <span className="secret-label">
-                      {assignment?.role === 'imposter' ? t.imposter : t.civilian}
-                    </span>
-                    <strong>{assignment?.role === 'imposter' ? '?' : round.word.text}</strong>
-                    <small>
-                      {assignment?.role === 'imposter' ? t.imposterDetail : t.civilianDetail}
-                    </small>
-                  </>
-                ) : (
-                  <>
-                    <EyeOff size={35} />
-                    <strong>••••••</strong>
-                    <small>{t.reveal}</small>
-                  </>
-                )}
-              </button>
-              <button type="button" className="primary-button" onClick={advance}>
-                {currentPlayer === players.length - 1 ? t.lastHandoff : t.handoff}
-                <ArrowRight size={19} />
-              </button>
-            </div>
-          </main>
-        )}
+        {round && phase === 'peek' && activePlayer && <main className="stage-layout"><div className="stage-counter">{t.step} {currentPlayer + 1} {t.of} {players.length}</div><div className="progress-track"><div style={{ width: `${((currentPlayer + 1) / players.length) * 100}%` }} /></div><div className="stage-card peek-card"><div className="stage-label"><span className="live-dot" /> TOP SECRET · {activePlayer.name}</div><h1>{'Your eyes only.'}</h1><p>{'Press and hold the card to peek at your role.'}</p><button type="button" className={`secret-card ${showRole ? 'revealed' : ''} ${assignment?.role === 'imposter' ? 'imposter-role' : ''}`} onPointerDown={() => setShowRole(true)} onPointerUp={() => setShowRole(false)} onPointerLeave={() => setShowRole(false)} onPointerCancel={() => setShowRole(false)} onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); setShowRole(true); } }} onKeyUp={(e) => { if (e.key === ' ' || e.key === 'Enter') setShowRole(false); }} onBlur={() => setShowRole(false)} aria-label={t.reveal}>
+                  {showRole ? <><span className="secret-label">{assignment?.role === 'imposter' ? t.imposter : t.civilian}</span><strong>{assignment?.role === 'imposter' ? '?' : round.word.text}</strong><small>{assignment?.role === 'imposter' ? t.imposterDetail : t.civilianDetail}</small></> : <><EyeOff size={35} /><strong>••••••</strong><small>{t.reveal}</small></>}
+                </button><button type="button" className="primary-button" onClick={advance}>{currentPlayer === players.length - 1 ? t.lastHandoff : t.handoff}<ArrowRight size={19} /></button></div></main>}
 
-        {round && phase === 'discuss' && (
-          <main className="stage-layout">
-            <div className="stage-counter">ROUND 01 · DISCUSSION</div>
-            <div className="stage-card discussion-card">
-              <div className="center-icon teal">
-                <Sparkles size={35} />
-              </div>
-              <div className="stage-label">{t.round}</div>
-              <h1>
-                <span>{players.find((p) => p.id === round.starterId)?.name}</span>
-                <br />
-                {t.starting}
-              </h1>
-              <p>{t.discussion}</p>
-              <div className="round-tip">
-                <Eye size={18} />
-                {'Keep it subtle. Too obvious helps the imposter.'}
-              </div>
-              <button className="primary-button" type="button" onClick={() => setPhase('vote')}>
-                {t.vote}
-                <Vote size={20} />
-              </button>
-            </div>
-          </main>
-        )}
+        {round && phase === 'discuss' && <main className="stage-layout"><div className="stage-counter">ROUND 01 · DISCUSSION</div><div className="stage-card discussion-card"><div className="center-icon teal">👾</div><div className="stage-label">{t.round}</div><h1><span>{players.find((p) => p.id === round.starterId)?.name}</span><br />{t.starting}</h1><p>{t.discussion}</p><div className="round-tip"><Eye size={18} />{'Keep it subtle. Too obvious helps the imposter.'}</div><button className="primary-button" type="button" onClick={() => setPhase('vote')}>{t.vote}<Vote size={20} /></button></div></main>}
 
-        {round && phase === 'vote' && (
-          <main className="stage-layout">
-            <div className="stage-counter">THE FINAL VOTE</div>
-            <div className="stage-card vote-card">
-              <div className="center-icon">
-                <Vote size={33} />
-              </div>
-              <div className="stage-label">MAKE YOUR PICK</div>
-              <h1>{t.voteHeading}</h1>
-              <p>
-                {t.voteSub} <b>{imposters}</b> {t.suspects}
-              </p>
-              <div className="suspect-list">
-                {players.map((p, i) => (
-                  <button
-                    key={p.id}
-                    type="button"
-                    aria-pressed={accused.includes(p.id)}
-                    className={`suspect-row ${accused.includes(p.id) ? 'chosen' : ''}`}
-                    onClick={() => toggleAccused(p.id)}
-                  >
-                    <span className="suspect-avatar">{String(i + 1).padStart(2, '0')}</span>
-                    <span>{p.name}</span>
-                    <span className="suspect-checkbox">
-                      {accused.includes(p.id) && <Check size={16} />}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <div className="vote-count">
-                {accused.length} / {imposters} {t.selected}
-              </div>
-              <button
-                className="primary-button"
-                type="button"
-                disabled={accused.length !== imposters}
-                onClick={() => setPhase('result')}
-              >
-                {t.confirm}
-                <ArrowRight size={20} />
-              </button>
-              <button className="subtle-link" type="button" onClick={() => setPhase('discuss')}>
-                <ArrowLeft size={15} />
-                {t.close}
-              </button>
-            </div>
-          </main>
-        )}
+        {round && phase === 'vote' && <main className="stage-layout"><div className="stage-counter">THE FINAL VOTE</div><div className="stage-card vote-card"><div className="center-icon">🗳️</div><div className="stage-label">MAKE YOUR PICK</div><h1>{t.voteHeading}</h1><p>{t.voteSub} <b>{imposters}</b> {t.suspects}</p><div className="suspect-list">{players.map((p, i) => <button key={p.id} type="button" aria-pressed={accused.includes(p.id)} className={`suspect-row ${accused.includes(p.id) ? 'chosen' : ''}`} onClick={() => toggleAccused(p.id)}><span className="suspect-avatar">{String(i + 1).padStart(2, '0')}</span><span>{p.name}</span><span className="suspect-checkbox">{accused.includes(p.id) && <Check size={16} />}</span></button>)}</div><div className="vote-count">{accused.length} / {imposters} {t.selected}</div><button className="primary-button" type="button" disabled={accused.length !== imposters} onClick={() => setPhase('result')}>{t.confirm}<ArrowRight size={20} /></button><button className="subtle-link" type="button" onClick={() => setPhase('discuss')}><ArrowLeft size={15} />{t.close}</button></div></main>}
 
-        {round && phase === 'result' && (
-          <main className="stage-layout">
-            <div className="stage-counter">{t.result}</div>
-            <div className="stage-card result-card">
-              <div className={`result-icon ${result === 'civilians' ? 'caught' : 'escaped'}`}>
-                {result === 'civilians' ? <Check size={38} /> : <ShieldQuestion size={38} />}
-              </div>
-              <div className="stage-label">GAME OVER</div>
-              <h1>{result === 'civilians' ? t.civiliansWin : t.impostersWin}</h1>
-              <div className="reveal-info">
-                <span>{t.impostersWere}</span>
-                <strong>
-                  {round.assignments
-                    .filter((a) => a.role === 'imposter')
-                    .map((a) => players.find((p) => p.id === a.playerId)?.name)
-                    .join(' + ')}
-                </strong>
-              </div>
-              <div className="reveal-info">
-                <span>{t.wordWas}</span>
-                <strong>{round.word.text}</strong>
-              </div>
-              <button type="button" className="primary-button" onClick={startGame}>
-                {t.next}
-                <RotateCcw size={19} />
-              </button>
-              <button type="button" className="subtle-link" onClick={() => setPhase('setup')}>
-                <ArrowLeft size={15} />
-                {t.backSetup}
-              </button>
-            </div>
-          </main>
-        )}
+        {round && phase === 'result' && <main className="stage-layout"><div className="stage-counter">{t.result}</div><div className="stage-card result-card"><div className={`result-icon ${result === 'civilians' ? 'caught' : 'escaped'}`}>{result === 'civilians' ? <Check size={38} /> : <ShieldQuestion size={38} />}</div><div className="stage-label">GAME OVER</div><h1>{result === 'civilians' ? t.civiliansWin : t.impostersWin}</h1><div className="reveal-info"><span>{t.impostersWere}</span><strong>{round.assignments.filter((a) => a.role === 'imposter').map((a) => players.find((p) => p.id === a.playerId)?.name).join(' + ')}</strong></div><div className="reveal-info"><span>{t.wordWas}</span><strong>{round.word.text}</strong></div><button type="button" className="primary-button" onClick={startGame}>{t.next}<RotateCcw size={19} /></button><button type="button" className="subtle-link" onClick={() => setPhase('setup')}><ArrowLeft size={15} />{t.backSetup}</button></div></main>}
 
-        <footer>
-          <span>© {new Date().getFullYear()} WHO’S THE IMPOSTER?</span>
-          <span>{t.privacy}</span>
-        </footer>
+        <footer><span>© {new Date().getFullYear()} WHO’S THE IMPOSTER?</span><span>{t.privacy}</span></footer>
       </div>
     </div>
   );
