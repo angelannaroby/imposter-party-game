@@ -408,7 +408,6 @@ function App() {
               <div className="stage-label">
                 <span className="live-dot" /> TOP SECRET · {activePlayer.name}
               </div>
-              <h1>{'Your eyes only.'}</h1>
               <SecretRoleCard
                 assignment={assignment}
                 word={round.word}

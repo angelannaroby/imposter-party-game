@@ -28,16 +28,16 @@ No accounts or backend are required. Game state stays on the device for the curr
 
 ## Tech stack
 
-| Area | Technology |
-| --- | --- |
-| Frontend | React 19, TypeScript, Vite |
-| Styling | Tailwind CSS, custom CSS, Lucide icons |
-| Unit tests | Vitest |
+| Area             | Technology                              |
+| ---------------- | --------------------------------------- |
+| Frontend         | React 19, TypeScript, Vite              |
+| Styling          | Tailwind CSS, custom CSS, Lucide icons  |
+| Unit tests       | Vitest                                  |
 | End-to-end tests | Playwright (mobile Chromium and WebKit) |
-| Code quality | ESLint, Prettier, strict TypeScript |
-| CI | GitHub Actions |
-| Deployment | Vercel |
-| Offline support | Web app manifest and service worker |
+| Code quality     | ESLint, Prettier, strict TypeScript     |
+| CI               | GitHub Actions                          |
+| Deployment       | Vercel                                  |
+| Offline support  | Web app manifest and service worker     |
 
 ## Architecture
 
