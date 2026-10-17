@@ -20,4 +20,5 @@ export const CATEGORIES: ReadonlyArray<{
   { id: 'transport', icon: '🚀', label: 'Transport' },
   { id: 'fashion', icon: '👟', label: 'Fashion' },
   { id: 'fantasy', icon: '🧙', label: 'Fantasy' },
+  { id: 'mallumovies', icon: '🎬', label: 'മല്ലു മൂവീസ്' },
 ];

@@ -1,7 +1,8 @@
 import type { Word } from '../model/types';
+import { MALLU_MOVIES } from './mallumovies';
 
 /** Curated clues give imposters an association, never a definition or the answer. */
-export const WORDS: readonly Word[] = [
+const ENGLISH_WORDS: readonly Word[] = [
   { id: 'food-1', category: 'food', text: 'Pizza', hint: 'Oven' },
   { id: 'food-2', category: 'food', text: 'Sushi', hint: 'Wasabi' },
   { id: 'food-3', category: 'food', text: 'Pancakes', hint: 'Maple syrup' },
@@ -360,3 +361,5 @@ export const WORDS: readonly Word[] = [
   { id: 'fantasy-19', category: 'fantasy', text: 'Genie', hint: 'Three wishes' },
   { id: 'fantasy-20', category: 'fantasy', text: 'Time machine', hint: 'Paradox' },
 ];
+
+export const WORDS: readonly Word[] = [...ENGLISH_WORDS, ...MALLU_MOVIES];

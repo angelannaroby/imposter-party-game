@@ -12,7 +12,8 @@ export type Category =
   | 'technology'
   | 'transport'
   | 'fashion'
-  | 'fantasy';
+  | 'fantasy'
+  | 'mallumovies';
 export type Word = { id: string; category: Category; text: string; hint: string };
 export type Player = { id: string; name: string };
 export type Role = 'civilian' | 'imposter';
