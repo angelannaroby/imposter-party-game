@@ -1,66 +1,89 @@
-# Who’s the Imposter?
+# FindTheFake 🚀
 
-An English-only, mobile-first, single-device secret-word party game for 3–12 players. Built with React 19, TypeScript, Vite and Tailwind CSS. No account or backend is required.
+A colourful, mobile-first imposter party game built for one phone and a room full of suspicious friends.
 
-## Getting started
+Everyone except the imposters receives the same secret word. Imposters get a related hint instead, then try to blend in while the group exchanges clues and figures out who's faking it.
 
-Requires Node.js 22.12+ and npm.
+**Live game:** [FindTheFake](https://findthefake.vercel.app/)
+
+## Features
+
+- **One-phone party play:** 3–12 players, with 1–4 imposters depending on group size.
+- **Private role reveals:** Hold to reveal your word or hint; release before passing the phone.
+- **Word-specific imposter hints:** Related clues rather than generic category descriptions.
+- **Varied categories:** English word collections plus **മല്ലു മൂവീസ്**, **മലയാളി വൈബ്സ്**, and **പഴയകാല ഓർമ്മകൾ** with Malayalam-script answers and hints.
+- **Flexible rounds:** Discuss with an optional timer, vote in the app, or move straight to a new round after voting in person.
+- **Playful space theme:** Animated crew characters, colourful cards, and a touch-friendly mobile interface.
+- **Installable experience:** PWA support and offline access after the initial online visit.
+- **Accessibility considerations:** Semantic controls, keyboard interaction, and reduced-motion support.
+
+## How it works
+
+1. Add player names, choose a category, and set the number of imposters.
+2. Pass the phone around. Each player privately reveals their role.
+3. Take turns giving clues, then discuss who might be faking it.
+4. Vote for the suspected imposters in the app, or vote aloud and start another round without revealing the answers on screen.
+
+No accounts or backend are required. Game state stays on the device for the current session.
+
+## Tech stack
+
+| Area | Technology |
+| --- | --- |
+| Frontend | React 19, TypeScript, Vite |
+| Styling | Tailwind CSS, custom CSS, Lucide icons |
+| Unit tests | Vitest |
+| End-to-end tests | Playwright (mobile Chromium and WebKit) |
+| Code quality | ESLint, Prettier, strict TypeScript |
+| CI | GitHub Actions |
+| Deployment | Vercel |
+| Offline support | Web app manifest and service worker |
+
+## Architecture
+
+The project uses a small, feature-oriented structure to keep game data, domain logic, and presentation separate.
+
+```text
+src/
+├── features/
+│   └── game/
+│       ├── components/       # Game screens and reusable crew UI
+│       ├── data/             # Categories and curated word banks
+│       └── model/            # Types, role assignment, and game rules
+├── styles/                   # Global and responsive styles
+├── App.tsx                   # Round flow and screen composition
+└── main.tsx                  # Application entry point
+
+tests/e2e/                    # Mobile browser flows
+public/                       # PWA assets and service worker
+.github/workflows/            # CI checks
+```
+
+The game runs entirely in the browser. Player roles and secret words aren't sent to a server. The PWA caches application resources for offline access after an initial online load.
+
+## Run locally
+
+Requires Node.js 22 and npm.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-## Scripts
+Useful scripts:
 
-| Script                 | Purpose                                |
-| ---------------------- | -------------------------------------- |
-| `npm run dev`          | Local Vite development server          |
-| `npm run build`        | TypeScript check and production bundle |
-| `npm run preview`      | Preview the production bundle          |
-| `npm run lint`         | ESLint                                 |
-| `npm run format`       | Apply Prettier formatting              |
-| `npm run format:check` | Verify Prettier formatting             |
-| `npm run test`         | Vitest unit tests                      |
-| `npm run test:e2e`     | Playwright mobile Chromium and WebKit  |
-| `npm run check`        | Formatting, ESLint, Vitest, and build  |
+```bash
+npm run check       # Format check, ESLint, unit tests, and production build
+npm run test:e2e    # Mobile Playwright tests
+npm run build       # TypeScript check and production build
+```
 
-Install Playwright browsers before the first E2E run: `npx playwright install chromium webkit`.
+For a first Playwright run, install the browsers with `npx playwright install chromium webkit`.
 
-## Gameplay
+## Project focus
 
-1. Enter 3–12 distinct names, choose a word category and select 1–4 imposters (at least two crew members must remain).
-2. Pass the device around; each player presses **I have the phone**, then **Hold to reveal** to privately see the word or an associated hint. Releasing hides the secret.
-3. Tap **Pass the phone** when the card is hidden; repeat for every player.
-4. Discuss who might be bluffing. The optional timer can be disabled.
-5. Either vote in the app to reveal results, or choose **New game** to play another round without exposing anyone's role.
+FindTheFake is a small party game, but it is built with the same attention to maintainability, predictable state transitions, mobile usability, testing, and automated quality checks as a larger frontend application.
 
-Crew members share a secret word; imposters see only a related-word hint. To win via in-app voting, the crew must identify _all_ imposters.
+## License
 
-## Project structure
-
-- `src/App.tsx`: game phase coordination and setup UI.
-- `src/features/game/components/`: crew visuals, private reveal, discussion timer, voting, and results.
-- `src/features/game/data/`: typed category and word data (352 words across 14 categories).
-- `src/features/game/model/`: domain types, randomized assignments, voting rules, and hints.
-- `src/features/game/model/__tests__/`: deterministic domain-level checks.
-- `tests/e2e/`: phone-sized full-round tests and overflow checks.
-- `src/styles/index.css`: global/mobile design, motion, and accessible reduced-motion rules.
-- `.github/workflows/ci.yml`: quality and mobile browser checks.
-
-Role assignments and player names are stored in local memory only. The site includes a service worker for offline use after the first online visit.
-
-## Mobile acceptance checks
-
-- Test portrait layouts at 320px, 375px, and 430px without horizontal scrolling.
-- Complete rounds with 3, 6, and 12 players, including a four-imposter round.
-- Ensure a secret is concealed when the reveal is released or the app loses focus.
-- Confirm **New game** does not disclose previous-round answers.
-- Run `npm run check` and `npm run test:e2e` before committing.
-- On a deployed HTTPS site, test offline loading after an initial successful online visit.
-
-Playwright requests reduced motion so WebKit can interact with stable controls. Regular users still receive animations unless their device requests reduced motion.
-
-## Scope
-
-English only for v1. Malayalam is a potential later addition. This project intentionally does not include online multiplayer, logins, or analytics. No license is granted unless the repository owner adds one.
+No license is currently provided. All rights reserved unless a license is added to the repository.
