@@ -21,4 +21,6 @@ export const CATEGORIES: ReadonlyArray<{
   { id: 'fashion', icon: '👟', label: 'Fashion' },
   { id: 'fantasy', icon: '🧙', label: 'Fantasy' },
   { id: 'mallumovies', icon: '🎬', label: 'മല്ലു മൂവീസ്' },
+  { id: 'malluvibes', icon: '🌴', label: 'മലയാളി വൈബ്സ്' },
+  { id: 'nostalgia', icon: '📼', label: 'പഴയകാല ഓർമ്മകൾ' },
 ];

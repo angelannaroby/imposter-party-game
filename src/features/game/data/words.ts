@@ -1,5 +1,7 @@
 import type { Word } from '../model/types';
 import { MALLU_MOVIES } from './mallumovies';
+import { MALLU_VIBES } from './malluvibes';
+import { NOSTALGIA } from './nostalgia';
 
 /** Curated clues give imposters an association, never a definition or the answer. */
 const ENGLISH_WORDS: readonly Word[] = [
@@ -362,4 +364,9 @@ const ENGLISH_WORDS: readonly Word[] = [
   { id: 'fantasy-20', category: 'fantasy', text: 'Time machine', hint: 'Paradox' },
 ];
 
-export const WORDS: readonly Word[] = [...ENGLISH_WORDS, ...MALLU_MOVIES];
+export const WORDS: readonly Word[] = [
+  ...ENGLISH_WORDS,
+  ...MALLU_MOVIES,
+  ...MALLU_VIBES,
+  ...NOSTALGIA,
+];
